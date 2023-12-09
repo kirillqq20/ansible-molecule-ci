@@ -11,16 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out the codebase.
+      - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Python 3.
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
 
-      - name: Install test dependencies.
-        run: pip3 install ansible molecule molecule-plugins[docker] yamllint ansible-lint
+      - name: Install Dependencies
+        run: |
+          pip3 install ansible molecule molecule-plugins[docker] yamllint ansible-lint
 
       - name: Run Molecule tests.
         run: molecule test
