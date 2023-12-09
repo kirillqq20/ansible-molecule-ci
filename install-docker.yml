@@ -1,50 +1,50 @@
 ---
-- name: Install Docker and Docker Compose on Ubuntu
+- name: Override Apache vars for Ubuntu
   hosts: all
   become: true
+  gather_facts: true
+
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
+    - name: Override Apache vars for Ubuntu.
+      ansible.builtin.set_fact:
+        apache_package: apache2
+        apache_service: apache2
+      when: ansible_os_family == 'Debian'
 
-    - name: Install dependencies
-      apt:
-        name:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
+- name: Install Apache
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    apache_package: apache2
+    apache_service: apache2
+
+  tasks:
+    - name: Ensure Apache is installed.
+      ansible.builtin.package:
+        name: "{{ apache_package }}"
         state: present
 
-    - name: Add Docker GPG key
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+    - name: Copy a web page.
+      ansible.builtin.copy:
+        content: |
+          <html>
+          <head><title>Hello world!</title></head>
+          <body>Hello world!</body>
+          </html>
+        dest: "/var/www/html/index.html"
+        mode: 0664
+      notify: restart apache
 
-    - name: Add Docker APT repository
-      apt_repository:
-        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
-        state: present
-
-    - name: Install Docker
-      apt:
-        name: docker-ce
-        state: present
-
-    - name: Install Docker Compose
-      command: >
-        curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{ ansible_system | lower }}-{{ ansible_architecture }}
-        -o /usr/local/bin/docker-compose
-      args:
-        creates: /usr/local/bin/docker-compose
-
-    - name: Make Docker Compose executable
-      file:
-        path: /usr/local/bin/docker-compose
-        mode: "u+x"
-
-    - name: Start and enable Docker service
-      systemd:
-        name: docker
+    - name: Ensure Apache is running and starts at boot.
+      ansible.builtin.service:
+        name: "{{ apache_service }}"
         state: started
-        enabled: yes
+        enabled: true
+
+  handlers:
+    - name: restart apache
+      ansible.builtin.service:
+        name: "{{ apache_service }}"
+        state: restarted
