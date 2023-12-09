@@ -1,5 +1,5 @@
 # Status build
-![example workflow](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+![example workflow](https://github.com/github/docs/actions/workflows/ci.yml/badge.svg)
 # ansible-molecule-ci
 # install
 sudo apt update
