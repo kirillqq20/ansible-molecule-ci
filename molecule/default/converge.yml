@@ -4,5 +4,11 @@
   become: true
 
   tasks:
+    - name: Update apt cache (on Debian).
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      when: ansible_os_family == 'Debian'
+
     - name: Include the main playbook
       include_tasks: ../../install-nginx.yml
