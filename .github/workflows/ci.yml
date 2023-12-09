@@ -7,20 +7,24 @@ on:
 
 jobs:
   test:
+    name: Molecule
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Check out the codebase.
         uses: actions/checkout@v2
 
-      - name: Set up Python
+      - name: Set up Python 3.
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
 
-      - name: Install Dependencies
-        run: |
-          pip install ansible molecule[docker] ansible ansible-lint
+      - name: Install test dependencies.
+        run: pip3 install ansible molecule molecule-plugins[docker] yamllint ansible-lint
 
-      - name: Run Molecule Test
+      - name: Run Molecule tests.
         run: molecule test
+        env:
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
+        working-directory: molecule
