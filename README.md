@@ -1,5 +1,5 @@
 # Status build
-![Build molecule nginx](https://github.com/kirillqq20/ansible-molecule-ci/.github/workflows/ci.yml/badge.svg)
+![GitHub Actions Status](https://github.com/kirillqq20/ansible-molecule-ci/actions/workflows/main.yml/badge.svg)
 # ansible-molecule-ci
 # install
 sudo apt update
