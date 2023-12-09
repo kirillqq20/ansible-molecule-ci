@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install ansible molecule[docker]
+          pip install ansible molecule[docker] ansible ansible-lint
 
       - name: Run Molecule Test
         run: molecule test
